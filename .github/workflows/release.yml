@@ -48,9 +48,6 @@ jobs:
           npm run build:mac
 
       # step5: cleanup artifacts in dist_electron
-      - name: cleanup artifacts
-        run: |
-         npx rimraf "dist/!(*.exe\\)|*dmg)"
 
       # step6: upload artifacts
       - name: upload artifacts
