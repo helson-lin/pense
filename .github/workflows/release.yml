@@ -59,7 +59,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            pense-setup.exe
-            pense.dmg
+            dist/pense-setup.exe
+            dist/pense.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
