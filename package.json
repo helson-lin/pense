@@ -1,6 +1,6 @@
 {
   "name": "pense",
-  "version": "0.0.9",
+  "version": "0.0.1",
   "description": "Live camera",
   "main": "./out/main/index.js",
   "author": "helson-lin.cn",
