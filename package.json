@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "Live camera",
   "main": "./out/main/index.js",
-  "author": "helson-lin.cn",
-  "homepage": "https://www.electronjs.org",
+  "author": "helsonlin@163.com",
+  "homepage": "helson-lin.cn",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
