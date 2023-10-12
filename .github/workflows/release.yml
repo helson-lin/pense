@@ -19,7 +19,7 @@ jobs:
     # create a build matrix for jobs
     strategy:
       matrix:
-        os: [windows-2019, macos-13.15.2]
+        os: [windows-latest, macos-latest]
 
     # create steps
     steps:
@@ -42,17 +42,15 @@ jobs:
       - name: Check output
         env:
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ steps.vars.outputs.tag }}
+        run: echo ${{ steps.vars.outputs.tag }}
       # step4: build app for mac/win
       - name: build windows app
-        if: matrix.os == 'windows-2019'
+        if: matrix.os == 'windows-latest'
         run: |
           npm run build:win
 
       - name: build mac app
-        if: matrix.os == 'macos-13.15.2'
+        if: matrix.os == 'macos-latest'
         run: |
           npm run build:mac
 
