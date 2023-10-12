@@ -19,7 +19,7 @@ jobs:
     # create a build matrix for jobs
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows-latest, macos-latest]
 
     # create steps
     steps:
