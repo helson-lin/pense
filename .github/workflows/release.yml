@@ -36,9 +36,6 @@ jobs:
         run: |
           npm install
 
-      - name: Set output
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
       # step4: build app for mac/win
       - name: build windows app
         if: matrix.os == 'windows-latest'
@@ -55,15 +52,12 @@ jobs:
       - name: List Release
         run: ls -l dist
 
-      - name: Win Release file
-        run: echo "dist/pense-${{ steps.vars.outputs.tag }}-setup.exe"
-
       - name: release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: false
           prerelease: false
-          files: "dist/**"
+          files: "dist/(*.exe|*.dmg)"
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
