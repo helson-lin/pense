@@ -49,18 +49,15 @@ jobs:
 
       # step5: cleanup artifacts in dist_electron
 
-      # step6: upload artifacts
-      - name: upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}
-          path: dist
+      - name: List Release
+        run: ls -l dist
 
-      # step7: create release
       - name: release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          draft: false
+          prerelease: false
           files: "dist/(.exe|.dmg)"
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
