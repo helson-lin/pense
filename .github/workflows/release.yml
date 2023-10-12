@@ -19,7 +19,7 @@ jobs:
     # create a build matrix for jobs
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest]
 
     # create steps
     steps:
@@ -39,10 +39,6 @@ jobs:
       - name: Set output
         id: vars
         run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-      - name: Check output
-        env:
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        run: echo ${{ steps.vars.outputs.tag }}
       # step4: build app for mac/win
       - name: build windows app
         if: matrix.os == 'windows-latest'
@@ -60,10 +56,7 @@ jobs:
         run: ls -l dist
 
       - name: Win Release file
-        run: echo "dist/pense-${{ env.RELEASE_VERSION }}-setup.exe"
-
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: echo "dist/pense-${{ steps.vars.outputs.tag }}-setup.exe"
 
       - name: release
         uses: softprops/action-gh-release@v1
