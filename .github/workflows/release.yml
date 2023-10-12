@@ -58,6 +58,6 @@ jobs:
         with:
           draft: false
           prerelease: false
-          files: "dist/(.exe|.dmg)"
+          files: "dist/([^/]+)"
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
