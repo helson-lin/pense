@@ -18,19 +18,21 @@
   </div>
 </template>
 <script setup>
+import FilterManage from './utils/filterManage'
 import Mousetrap from 'mousetrap'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, getCurrentInstance } from 'vue'
 import Tools from './components/Tools.vue'
 import Message from './components/Message.vue'
 import { getAllCameras, getCameraStream } from './utils/camera'
+const fm = new FilterManage()
 const cameras = ref([])
 const videoRef = ref(null)
 const messageRef = ref(null)
 const showCamera = ref(false)
 const dragabble = ref(false)
 const showTool = ref(false)
-const filterStyle = ref('transform: scaleX(-1);')
-const filterMap = { blur: 'filter: blur(20px);', mirror: 'transform: scaleX(-1);' }
+const filterStyle = ref('')
+const { proxy } = getCurrentInstance();
 // keyboard binding
 Mousetrap.bind(['command+up', 'ctrl+up'], () => {
   window.electron.ipcRenderer.send('size', 'max')
@@ -66,7 +68,11 @@ Mousetrap.bind(['command+d', 'ctrl+d'], () => {
   dragabble.value = !dragabble.value
   return false
 })
-
+Mousetrap.bind(['command+g', 'ctrl+g'], () => {
+  filterOperation('reversal')
+  filterOperation('lowContrast')
+  return false
+})
 /**
  * @description refresh camera device
  */
@@ -74,53 +80,55 @@ const refresh = () => getAllCameras().then((devices) => (cameras.value = devices
 
 const resetCamera = () => {
   showCamera.value = !showCamera.value
+  if (!showCamera.value) {
+    const tracks = videoRef.value.srcObject.getTracks()
+    tracks.forEach((track) => {
+      track.stop()
+    })
+    console.log('GUANBIOUS')
+  }
 }
 
 const mirror = () => filterOperation('mirror')
 const filterOperation = (key) => {
-  const style = filterMap[key]
-  if (!style) return
-  if (filterStyle.value.includes(style)) {
-    filterStyle.value = filterStyle.value.replace(style, '')
-  } else {
-    filterStyle.value += style
-  }
+  fm.setFilter(key)
+  filterStyle.value = fm.getFilter()
 }
 
 const playMedia = (deviceId) => {
   showCamera.value = true
   setTimeout(() => {
-    getCameraStream(deviceId).then((currentStream) => {
-      // 监听媒体流结束事件
-      currentStream.getTracks().forEach((track) => {
-        track.onended = () => {
-          track.stop()
-          messageRef.value.show({
-            value: '媒体流已结束',
-            duration: 1000
-          })
-          console.log('媒体流已结束')
-          // 在这里执行结束后的操作
+    getCameraStream(deviceId)
+      .then((currentStream) => {
+        // 监听媒体流结束事件
+        currentStream.getTracks().forEach((track) => {
+          track.onended = () => {
+            track.stop()
+            messageRef.value.show({
+              value: proxy.$t('cameraDisconnect'),
+              duration: 1000
+            })
+            // 在这里执行结束后的操作
+          }
+        })
+        if (videoRef.value) {
+          videoRef.value.srcObject = currentStream
+          videoRef.value.play()
         }
       })
-      if (videoRef.value) {
-        videoRef.value.srcObject = currentStream
-        videoRef.value.play()
-      }
-    })
+      .catch(function () {
+        messageRef.value.show({
+          value: proxy.$t('cameraError'),
+          duration: 1000
+        })
+      })
   }, 0)
 }
 
 // const effectAction = (key) => {}
 
 onMounted(async () => {
-  setTimeout(() => {
-    console.log(messageRef.value)
-    messageRef.value.show({
-      value: '媒体流已结束',
-      duration: 1000
-    })
-  }, 3000)
+  mirror()
   getAllCameras().then((devices) => (cameras.value = devices))
 })
 </script>
@@ -131,6 +139,7 @@ onMounted(async () => {
   border-radius: 50%;
   overflow: hidden;
 }
+
 @import './assets/css/styles.less';
 </style>
 <style lang="less" scoped>
@@ -145,12 +154,15 @@ onMounted(async () => {
   background-color: rgba(0, 0, 0, 0.7);
   overflow: hidden;
   -webkit-app-region: none;
+  z-index: 34;
+
   .cameras {
     width: 100%;
     display: flex;
     flex-direction: column;
     padding: 0 10px;
     box-sizing: border-box;
+
     .camera {
       width: 100%;
       height: 1.7rem;
@@ -167,12 +179,14 @@ onMounted(async () => {
       border: 1px solid;
       color: #fff;
       margin-bottom: 10px;
+
       &:hover {
         cursor: pointer;
         background-color: #6364bf;
       }
     }
   }
+
   .drag {
     position: absolute;
     left: 0;
@@ -186,6 +200,7 @@ onMounted(async () => {
     cursor: move;
     pointer-events: all;
   }
+
   .full-video {
     width: 100%;
     height: 100%;

@@ -104,14 +104,14 @@ Mousetrap.bind(['command+p', 'ctrl+p'], () => {
     cursor: pointer;
 
     &.reverse {
-      /deep/ svg {
+      :deep(svg) {
         transform: rotate(360deg);
         transform-origin: center;
         transition: all 1s ease;
       }
     }
     &.deverse {
-      /deep/ svg {
+      :deep(svg) {
         transform: rotate(-360deg);
         transform-origin: center;
         transition: all 1s ease;
