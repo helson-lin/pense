@@ -21,7 +21,7 @@ You can replace `command` with `ctrl` in the following command
 | `command+t`  | open tools bar  |
 | `command+left`  | move window to left top corner  |
 | `command+right`  | move window to right bottom corner  |
-
+| `command+g`  | reveral the camera  |
 
 # HOW TO CLOSE APPLICATION?
 
