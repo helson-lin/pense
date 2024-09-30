@@ -1,6 +1,6 @@
-# Pense
+![Pense Logo](https://file.helson-lin.cn/picgopense_icon.png)
 
-Pense is a live camera. It is can be used to display yourself when you are on live.
+# Pense: a live camera. It is can be used to display yourself when you are on live.
 
 It provide mirror functionality, and you can blur you camera when you are doing something secretly.
 

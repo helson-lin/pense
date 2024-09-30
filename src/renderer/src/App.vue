@@ -101,6 +101,7 @@ const playMedia = (deviceId) => {
     getCameraStream(deviceId)
       .then((currentStream) => {
         // 监听媒体流结束事件
+        console.warn(currentStream)
         currentStream.getTracks().forEach((track) => {
           track.onended = () => {
             track.stop()
@@ -114,9 +115,11 @@ const playMedia = (deviceId) => {
         if (videoRef.value) {
           videoRef.value.srcObject = currentStream
           videoRef.value.play()
+          console.log(videoRef.value)
         }
       })
-      .catch(function () {
+      .catch(function (e) {
+        console.error(e)
         messageRef.value.show({
           value: proxy.$t('cameraError'),
           duration: 1000
